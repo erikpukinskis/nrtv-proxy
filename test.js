@@ -17,16 +17,17 @@ test.using(
     var proxyToHome = proxy(trulincs, "http://localhost:9944")
     trulincs.start(7623)
 
-    var getHome = proxyToHome.get("/")
+    proxyToHome.get("/",
+      function(response) {
+        expect(response.body).to.match(
+          /you are home/
+        )
 
-    getHome(function(response) {
-      expect(response.body).to.match(
-        /you are home/
-      )
-      home.stop()
-      trulincs.stop()
-      done()
-    })
+        home.stop()
+        trulincs.stop()
+        done()
+      }
+    )
 
   }
 )

@@ -39,27 +39,31 @@ module.exports = library.export(
         }
       )
 
-      return {
-        get: buildRequester.bind(null, server, prefix, "GET")
-      }
-
-
-      return 
+      return new Proxy(prefix)
     }
 
-    function buildRequester(server, prefix, method, path) {
+
+    function Proxy(prefix) {
+      this.prefix = prefix
+    }
+
+    Proxy.prototype.get =
+      function(path, callback) {
 
       path = path.replace(/^\/?/, "")
 
-      var url = "http://localhost:7623"+prefix+"/"+path
+      var url = "http://localhost:7623"+this.prefix+"/"+path
 
-      return function(callback) {
-        request(url,
-          function(error, response) {
-            callback(response)
+
+      request(url,
+        function(error, response) {
+          if (error) {
+            console.log(" ⚡ PROXY ERROR ⚡ Hitting "+url)
+            throw error
           }
-        )
-      }
+          callback(response)
+        }
+      )
     }
 
     return proxy
