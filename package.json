@@ -1,0 +1,26 @@
+{
+  "name": "nrtv-proxy",
+  "version": "0.0.0",
+  "description": "Make requests on behalf of a friend",
+  "main": "proxy.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/erikpukinskis/nrtv-proxy.git"
+  },
+  "dependencies": {
+    "nrtv-library": "*",
+    "nrtv-browser-bridge": "*",
+    "nrtv-server": "*",
+    "request": "*",
+    "http-proxy": "*"
+  },
+  "scripts": {
+    "test": "node test"
+  },
+  "devDependencies": {
+    "nrtv-test": "*",
+    "supertest": "*"
+  },
+  "license": "ISC",
+  "homepage": "https://github.com/erikpukinskis/nrtv-browse"
+}
