@@ -8,9 +8,11 @@ module.exports = library.export(
     }),
     "request",
     "http",
-    "http-proxy"
+    "http-proxy",
+    "nrtv-browser-bridge",
+    "nrtv-ajax"
   ],
-  function(collective, request, http, httpProxy) {
+  function(collective, request, http, httpProxy, bridge, ajax) {
 
     function proxy(server, url) {
 
@@ -47,15 +49,18 @@ module.exports = library.export(
       this.prefix = prefix
     }
 
+    Proxy.prototype._getUrl =
+      function(path) {
+        path = path ? path.replace(/^\/?/, "") : ""
+
+        return "http://localhost:7623"+this.prefix+"/"+path
+      }
+
     Proxy.prototype.get =
       function(path, callback) {
 
-      path = path.replace(/^\/?/, "")
-
-      var url = "http://localhost:7623"+this.prefix+"/"+path
-
-
-      request(url,
+      request(
+        this._getUrl(path),
         function(error, response) {
           if (error) {
             console.log(" ⚡ PROXY ERROR ⚡ Hitting "+url)
@@ -64,6 +69,16 @@ module.exports = library.export(
           callback(response)
         }
       )
+    }
+
+    Proxy.prototype.defineGetInBrowser = function() {
+
+      return bridge.defineFunction(
+        [ajax.defineGetInBrowser()],
+        function proxyGet(get, prefix, path, callback) {
+          get(prefix+path, callback)
+        }
+      ).withArgs(this._getUrl())
     }
 
     return proxy

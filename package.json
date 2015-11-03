@@ -12,14 +12,16 @@
     "nrtv-browser-bridge": "*",
     "nrtv-server": "*",
     "request": "*",
-    "http-proxy": "*"
+    "http-proxy": "*",
+    "nrtv-ajax": "*"
   },
   "scripts": {
-    "test": "node test"
+    "test": "node --harmony test"
   },
   "devDependencies": {
     "nrtv-test": "*",
-    "supertest": "*"
+    "supertest": "*",
+    "nrtv-browse": "*"
   },
   "license": "ISC",
   "homepage": "https://github.com/erikpukinskis/nrtv-browse"
