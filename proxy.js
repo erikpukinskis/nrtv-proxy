@@ -41,19 +41,20 @@ module.exports = library.export(
         }
       )
 
-      return new Proxy(prefix)
+      return new Proxy(prefix, server)
     }
 
 
-    function Proxy(prefix) {
+    function Proxy(prefix, server) {
       this.prefix = prefix
+      this.server = server
     }
 
     Proxy.prototype._getUrl =
       function(path) {
         path = path ? path.replace(/^\/?/, "") : ""
 
-        return "http://localhost:7623"+this.prefix+"/"+path
+        return "http://localhost:"+this.server.port+this.prefix+"/"+path
       }
 
     Proxy.prototype.get =
@@ -76,6 +77,8 @@ module.exports = library.export(
       return bridge.defineFunction(
         [ajax.defineGetInBrowser()],
         function proxyGet(get, prefix, path, callback) {
+          path = path ? path.replace(/^\/?/, "") : ""
+
           get(prefix+path, callback)
         }
       ).withArgs(this._getUrl())

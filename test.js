@@ -1,10 +1,11 @@
 var test = require("nrtv-test")(require)
 var library = test.library
 
+
 test.using(
-  "pass a request through one server to another",
-  ["./", "nrtv-server", "http", library.reset("nrtv-browser-bridge"), "nrtv-browse"],
-  function(expect, done, proxy, Server, http, bridge, browse) {
+  "server-side get",
+  ["./", "nrtv-server"],
+  function(expect, done, proxy, Server) {
     var home = new Server()
     home.get("/",
       function(request, response) {
@@ -23,13 +24,29 @@ test.using(
         expect(response.body).to.match(
           /you are home/
         )
-
-        done.ish("proxy works through server library")
-
-        tryFromBrowser()
+        home.stop()
+        trulincs.stop()
+        done()
       }
     )
 
+  }
+)
+
+
+
+
+test.using(
+  "get from browser",
+  ["./", "nrtv-server",  library.reset("nrtv-browser-bridge"), "nrtv-browse"],
+  function(expect, done, proxy, Server, bridge, browse) {
+
+    var home = new Server()
+    home.start(5054)
+
+    var trulincs = new Server()
+    var proxyToHome = proxy(trulincs, "http://localhost:5054")
+    trulincs.start(6064)
 
     var getFromHome = proxyToHome.defineGetInBrowser()
 
@@ -55,15 +72,13 @@ test.using(
       bridge.sendPage()
     )
 
-    function tryFromBrowser() {
-      browse("http://localhost:7623",
-        function(browser) {
-          browser.assert.text("body", "hi honey")
-          home.stop()
-          trulincs.stop()
-          done()
-        }
-      )
-    }
+    browse("http://localhost:6064",
+      function(browser) {
+        browser.assert.text("body", "hi honey")
+        home.stop()
+        trulincs.stop()
+        done()
+      }
+    )
   }
 )
