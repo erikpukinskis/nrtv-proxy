@@ -9,18 +9,15 @@
   },
   "dependencies": {
     "nrtv-library": "*",
-    "nrtv-browser-bridge": "*",
-    "nrtv-server": "*",
-    "request": "*",
     "http-proxy": "*",
-    "nrtv-ajax": "*"
+    "nrtv-make-request": "*"
   },
   "scripts": {
     "test": "node --harmony test"
   },
   "devDependencies": {
+    "nrtv-server": "*",
     "nrtv-test": "*",
-    "supertest": "*",
     "nrtv-browse": "*"
   },
   "license": "ISC",

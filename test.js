@@ -1,6 +1,7 @@
 var test = require("nrtv-test")(require)
 var library = test.library
 
+test.only()
 
 test.using(
   "server-side get",
@@ -19,16 +20,17 @@ test.using(
     var proxyToHome = proxy(trulincs, "http://localhost:9944")
     trulincs.start(7623)
 
-    proxyToHome.get("/",
-      function(response) {
-        expect(response.body).to.match(
-          /you are home/
-        )
-        home.stop()
-        trulincs.stop()
-        done()
-      }
-    )
+
+    proxyToHome({
+      path: "/"
+    }, function(text) {
+      expect(text).to.match(
+        /you are home/
+      )
+      home.stop()
+      trulincs.stop()
+      done()
+    })
 
   }
 )
@@ -48,13 +50,17 @@ test.using(
     var proxyToHome = proxy(trulincs, "http://localhost:5054")
     trulincs.start(6064)
 
-    var getFromHome = proxyToHome.defineGetInBrowser()
+
+    var def = proxyToHome.defineInBrowser()
 
     var phoneHome = bridge
     .defineFunction(
-      [getFromHome],
-      function write(get) {
-        get("/email", function(text) {
+      [proxyToHome.defineInBrowser()],
+      function write(makeRequest) {
+        makeRequest({
+          method: "get",
+          path: "/email"
+        }, function(text) {
           document.write(text)
         })
       }
