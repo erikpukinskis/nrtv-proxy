@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "nrtv-library": "*",
-    "http-proxy": "*",
     "nrtv-make-request": "*"
   },
   "scripts": {

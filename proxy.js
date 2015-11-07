@@ -4,37 +4,46 @@ module.exports = library.export(
   "nrtv-proxy",
   [
     library.collective({
-      identifiers: {}
+      urls: {}
     }),
-    "http-proxy",
     "nrtv-make-request"
   ],
-  function(collective, httpProxy, makeRequest) {
+  function(collective, makeRequest) {
 
     function proxy(server, url) {
 
       do {
         var id = Math.random().toString(36).split(".")[1].substr(0,5)
-      } while (collective.identifiers[id])
+      } while (collective.urls[id])
 
-      collective.identifiers[id] = true
+      collective.urls[id] = url
 
       var prefix = "/_nrtv-proxy/"+id
 
-      var proxyServer = httpProxy.createProxyServer({})
+      server.use(
+        function(request, response, next) {
 
-      server.get("/_nrtv-proxy/:id/*",
-        function(request, response) {
-          var id = request.params.id
+          var match = request.path.match(/\/_nrtv-proxy\/([^/]+)[/$]/)
 
-          request.url = request.url.replace(/^\/_nrtv-proxy\/[a-zA-Z0-9]+/, "")
+          if (!match) { return next() }
 
+          var id = match[1]
 
-          proxyServer.web(
-            request,
-            response,
-            {target: url}
-          )
+          var path = request.url.replace("/_nrtv-proxy/"+id, "")
+          var url = collective.urls[id]+path
+
+          if (request.method == "POST") {
+            var data = request.body
+          }
+
+          makeRequest({
+            url: url,
+            method: request.method,
+            data: data
+          }, function(body) {
+            response.send(body)
+          })
+          console.log("should be hitting other server now:", request.method, collective.urls[id])
         }
       )
 
