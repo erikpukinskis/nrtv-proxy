@@ -6,7 +6,7 @@ module.exports = library.export(
     library.collective({
       urls: {}
     }),
-    "nrtv-make-request"
+    "make-request"
   ],
   function(collective, makeRequest) {
 

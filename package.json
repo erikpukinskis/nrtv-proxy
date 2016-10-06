@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "nrtv-library": "*",
-    "nrtv-make-request": "*"
+    "make-request": "*"
   },
   "scripts": {
     "test": "node --harmony test"
@@ -17,7 +17,8 @@
   "devDependencies": {
     "nrtv-server": "*",
     "nrtv-test": "*",
-    "nrtv-browse": "*"
+    "nrtv-browse": "*",
+    "browser-bridge": "*"
   },
   "license": "ISC",
   "homepage": "https://github.com/erikpukinskis/nrtv-browse"

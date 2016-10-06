@@ -18,8 +18,8 @@ test.using(
 
     var trulincs = new Server()
     var proxyToHome = proxy(trulincs, "http://localhost:9944")
-    trulincs.start(7623)
 
+    trulincs.start(7623)
 
     proxyToHome({
       method: "post",
@@ -74,7 +74,7 @@ test.using(
 
 test.using(
   "get from browser",
-  ["./", "nrtv-server",  library.reset("nrtv-browser-bridge"), "nrtv-browse"],
+  ["./", "nrtv-server",  library.reset("browser-bridge"), "nrtv-browse"],
   function(expect, done, proxy, Server, bridge, browse) {
 
     var home = new Server()
@@ -85,11 +85,9 @@ test.using(
     trulincs.start(6064)
 
 
-    var def = proxyToHome.defineInBrowser()
-
     var phoneHome = bridge
     .defineFunction(
-      [proxyToHome.defineInBrowser()],
+      [proxyToHome.defineOn(bridge)],
       function write(makeRequest) {
         makeRequest({
           method: "get",
